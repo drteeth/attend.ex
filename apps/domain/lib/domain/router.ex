@@ -1,7 +1,7 @@
 defmodule Attend.Router do
   use Commanded.Commands.Router
 
-  alias Attend.{RegisterUser, User}
+  alias Attend.{UserCommandHandler, User, RegisterUser}
 
-  dispatch RegisterUser, to: User, identity: :id
+  dispatch RegisterUser, to: UserCommandHandler, aggregate: User, identity: :id
 end
