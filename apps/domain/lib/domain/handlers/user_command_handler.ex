@@ -3,8 +3,8 @@ defmodule Attend.UserCommandHandler do
 
   alias Attend.{User, RegisterUser}
 
-  def handle(%User{} = _user, %RegisterUser{id: id, name: name, email: email}) do
-    User.register(id, name, email)
+  def handle(%User{} = user, %RegisterUser{id: id, name: name, email: email}) do
+    user |> User.register(id, name, email)
   end
 
 end
