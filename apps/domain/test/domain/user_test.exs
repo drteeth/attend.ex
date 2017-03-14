@@ -5,13 +5,30 @@ defmodule Attend.UserTest do
     Router,
     RegisterUser,
     RegisterTeam,
+    JoinTeam,
+    Team,
   }
 
   test "register user command" do
-    command = RegisterUser.register(name: "Ben Moss", email: "drteeth@gmail.com")
-    Router.dispatch(command)
-    command = RegisterTeam.register(name: "The Penguins")
-    Router.dispatch(command)
+    register_user_command = RegisterUser.register(name: "Ben Moss", email: "drteeth@gmail.com")
+    Router.dispatch(register_user_command)
+
+    register_team_command = RegisterTeam.register(name: "The Penguins")
+    Router.dispatch(register_team_command)
+
+    join_team_command = %JoinTeam{
+      user_id: register_user_command.id,
+      team_id: register_team_command.id,
+    }
+
+    Router.dispatch(join_team_command)
+
+    {:ok, events} = EventStore.read_stream_forward(register_team_command.id)
+    team = List.foldl(events, %Team{}, fn (event, team) ->
+      Team.apply(team, event.data)
+    end)
+
+    IO.inspect(team)
   end
 
 end

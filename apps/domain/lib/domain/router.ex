@@ -3,7 +3,8 @@ defmodule Attend.Router do
 
   alias Attend.{
     RegisterUser, User, UserCommandHandler,
-    RegisterTeam, Team, TeamCommandHandler
+    RegisterTeam, Team, TeamCommandHandler,
+    JoinTeam,
   }
 
   dispatch RegisterUser, to: UserCommandHandler,
@@ -11,5 +12,8 @@ defmodule Attend.Router do
 
   dispatch RegisterTeam, to: TeamCommandHandler,
     aggregate: Team, identity: :id
+
+  dispatch JoinTeam, to: TeamCommandHandler,
+    aggregate: Team, identity: :team_id
 
 end
