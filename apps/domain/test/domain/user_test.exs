@@ -7,6 +7,8 @@ defmodule Attend.UserTest do
     RegisterTeam,
     JoinTeam,
     Team,
+    Repo,
+    EventHandlers.UserProjection,
   }
 
   test "register user command" do
@@ -26,15 +28,13 @@ defmodule Attend.UserTest do
 
     :ok = Router.dispatch(join_team_command)
 
-    {:ok, events} = EventStore.read_stream_forward(register_team_command.id)
-    team = List.foldl(events, %Team{}, fn (event, team) ->
-      Team.apply(team, event.data)
-    end)
-
-    IO.inspect(team)
-
     # Terrible HACK: the projection doesn't have time to run.
-    :timer.sleep 10
+    :timer.sleep 100
+
+    user = Repo.get!(UserProjection.User, register_user_command.id)
+    assert user.id == register_user_command.id
+    assert user.name == "Ben Moss"
+    assert user.email == "drteeth@gmail.com"
   end
 
 end

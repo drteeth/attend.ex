@@ -4,9 +4,12 @@ defmodule Attend.EventHandlers.UserProjection do
   defmodule User do
     use Ecto.Schema
 
+    @primary_key {:id, :binary_id, autogenerate: false}
     schema "users" do
       field :name, :string
       field :email, :string
+
+      timestamps()
     end
   end
 
@@ -40,7 +43,7 @@ defmodule Attend.EventHandlers.UserProjection do
         email: email}, _metadata) do
     IO.inspect name
     IO.inspect Repo.insert(%User{
-          # id: id, # TODO convert to uuid binary-id
+          id: id,
           name: name,
           email: email
                            })
