@@ -9,6 +9,7 @@ config :eventstore, EventStore.Storage,
   pool_size: 10
 
 config :domain, Attend.Repo,
+  ecto_repos: [Attend.Repo],
   adapter: Ecto.Adapters.Postgres,
   database: "attend_test",
   username: "ben",

@@ -19,14 +19,15 @@ defmodule Attend.Domain.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger, :commanded],
+    [extra_applications: [:logger, :commanded, :ecto, :postgrex],
      mod: {Attend.Domain.Application, []}]
   end
 
   defp deps do
     [
       {:commanded, "~> 0.9"},
-      {:ecto, "~> 2.1"}
+      {:ecto, "~> 2.1"},
+      {:postgrex, "~> 0.11"}
     ]
   end
 end

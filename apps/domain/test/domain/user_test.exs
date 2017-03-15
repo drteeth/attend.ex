@@ -10,7 +10,10 @@ defmodule Attend.UserTest do
   }
 
   test "register user command" do
-    register_user_command = RegisterUser.register(name: "Ben Moss", email: "drteeth@gmail.com")
+    register_user_command = RegisterUser.register(
+      name: "Ben Moss",
+      email: "drteeth@gmail.com"
+    )
     :ok = Router.dispatch(register_user_command)
 
     register_team_command = RegisterTeam.register(name: "The Penguins")
