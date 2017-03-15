@@ -29,6 +29,9 @@ defmodule Attend.UserTest do
     end)
 
     IO.inspect(team)
+
+    # Terrible HACK: the projection doesn't have time to run.
+    :timer.sleep 10
   end
 
 end

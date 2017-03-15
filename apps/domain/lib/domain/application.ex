@@ -11,7 +11,7 @@ defmodule Attend.Domain.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Starts a worker by calling: Attend.Domain.Worker.start_link(arg1, arg2, arg3)
-      # worker(Attend.Domain.Worker, [arg1, arg2, arg3]),
+      worker(Commanded.Event.Handler, ["UserProjection", Attend.EventHandlers.UserProjection]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
