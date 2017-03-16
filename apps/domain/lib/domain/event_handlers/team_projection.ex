@@ -1,7 +1,10 @@
-defmodule Attend.RosterHandler do
+defmodule Attend.EventHandlers.TeamProjection do
   @behaviour Commanded.Event.Handler
 
   alias Attend.{TeamRegistered, PlayerJoinedTeam}
+
+  defmodule Team do
+  end
 
   def handle(%TeamRegistered{team_id: team_id, name: name}, _metadata) do
   end
@@ -10,4 +13,5 @@ defmodule Attend.RosterHandler do
   end
 
   def handle(_event, _metadata), do: :ok
+
 end
