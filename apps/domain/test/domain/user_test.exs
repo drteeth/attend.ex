@@ -8,7 +8,7 @@ defmodule Attend.UserTest do
     JoinTeam,
     Team,
     Repo,
-    EventHandlers.UserProjection,
+    ReadModel.User,
   }
 
   test "register user command" do
@@ -31,7 +31,7 @@ defmodule Attend.UserTest do
     # Terrible HACK: the projection doesn't have time to run.
     :timer.sleep 100
 
-    user = Repo.get!(UserProjection.User, register_user_command.id)
+    user = Repo.get!(User, register_user_command.id)
     assert user.id == register_user_command.id
     assert user.name == "Ben Moss"
     assert user.email == "drteeth@gmail.com"
