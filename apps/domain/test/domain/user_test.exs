@@ -11,6 +11,9 @@ defmodule Attend.UserTest do
     ReadModel.User,
   }
 
+  alias Attend.EventHandlers.TeamProjection.Team, as: TeamRosters
+  alias Attend.EventHandlers.TeamProjection.Player, as: PlayerTeams
+
   test "register user command" do
     register_user_command = RegisterUser.register(
       name: "Ben Moss",
@@ -31,10 +34,10 @@ defmodule Attend.UserTest do
     # Terrible HACK: the projection doesn't have time to run.
     :timer.sleep 100
 
-    user = Repo.get!(User, register_user_command.id)
-    assert user.id == register_user_command.id
-    assert user.name == "Ben Moss"
-    assert user.email == "drteeth@gmail.com"
+    player = Repo.get!(PlayerTeams, register_user_command.id)
+    roster = Repo.get!(TeamRosters, register_team_command.id)
+    IO.inspect player
+    IO.inspect roster
   end
 
 end

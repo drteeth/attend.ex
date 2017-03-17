@@ -8,7 +8,8 @@ defmodule Attend.Domain.Application do
 
     children = [
       supervisor(Attend.Repo, []),
-      worker(Commanded.Event.Handler, ["UserProjection", Attend.EventHandlers.UserProjection]),
+      worker(Commanded.Event.Handler, ["UserProjection", Attend.EventHandlers.UserProjection], id: :user_projection),
+      worker(Commanded.Event.Handler, ["TeamProjection", Attend.EventHandlers.TeamProjection], id: :team_projection),
     ]
 
     opts = [strategy: :one_for_one, name: Attend.Domain.Supervisor]
