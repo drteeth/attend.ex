@@ -24,12 +24,17 @@ defmodule Attend.UserTest do
     register_team_command = RegisterTeam.register(name: "The Penguins")
     :ok = Router.dispatch(register_team_command)
 
-    join_team_command = %JoinTeam{
+    join_team_command = JoinTeam.create(
       user_id: register_user_command.id,
       team_id: register_team_command.id,
-    }
-
+    )
     :ok = Router.dispatch(join_team_command)
+
+    join_team_command = JoinTeam.create(
+      user_id: register_user_command.id,
+      team_id: register_team_command.id,
+    )
+    {:error, _} = Router.dispatch(join_team_command)
 
     # Terrible HACK: the projection doesn't have time to run.
     :timer.sleep 100

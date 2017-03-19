@@ -7,8 +7,14 @@ defmodule Attend.Team do
     %Attend.TeamRegistered{team_id: id, name: name}
   end
 
-  def add_player(%Team{} = _team, team_id, user_id) do
-    %PlayerJoinedTeam{user_id: user_id, team_id: team_id}
+  def add_player(%Team{} = team, team_id, user_id) do
+    # TODO Validate that the team exists?
+
+    if Enum.member?(team.players, user_id) do
+      {:error, :player_already_joined_team}
+    else
+      %PlayerJoinedTeam{user_id: user_id, team_id: team_id}
+    end
   end
 
   def apply(%Team{} = team, %TeamRegistered{team_id: id, name: name}) do
