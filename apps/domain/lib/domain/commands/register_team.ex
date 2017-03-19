@@ -3,7 +3,7 @@ defmodule Attend.RegisterTeam do
 
   def register(name: name) do
     %__MODULE__{
-      id: Ecto.UUID.generate,
+      id: Attend.Id.generate(),
       name: name
     }
   end

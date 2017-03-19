@@ -4,7 +4,7 @@ defmodule Attend.RegisterUser do
   def register(name: name, email: email) do
     # TODO handle :email_already_registered
     %__MODULE__{
-      id: Ecto.UUID.generate,
+      id: Attend.Id.generate,
       name: name,
       email: email
     }
