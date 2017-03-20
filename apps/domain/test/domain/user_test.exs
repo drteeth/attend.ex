@@ -36,6 +36,7 @@ defmodule Attend.UserTest do
     {:error, _} = Router.dispatch(join_team_command)
 
     the_noodles = RegisterTeam.register(name: "The Noodles")
+    :ok = Router.dispatch(the_noodles)
 
     schedule_game_command = ScheduleGame.create(
       location: "Monarch Park: Field 1",
@@ -51,8 +52,8 @@ defmodule Attend.UserTest do
 
     player = Repo.get!(PlayerTeams, register_user_command.id)
     roster = Repo.get!(TeamRosters, the_penguins.id)
-    IO.inspect player
-    IO.inspect roster
+
+    IO.inspect Attend.EventHandlers.TeamGames.get_team_games
   end
 
 end
