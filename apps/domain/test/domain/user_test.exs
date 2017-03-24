@@ -8,6 +8,7 @@ defmodule Attend.UserTest do
     JoinTeam,
     Repo,
     ScheduleGame,
+    CheckAttendance,
   }
 
   alias Attend.EventHandlers.TeamProjection.Team, as: TeamRosters
@@ -38,14 +39,17 @@ defmodule Attend.UserTest do
     the_noodles = RegisterTeam.register(name: "The Noodles")
     :ok = Router.dispatch(the_noodles)
 
-    schedule_game_command = ScheduleGame.create(
+    game = ScheduleGame.create(
       location: "Monarch Park: Field 1",
       start: Ecto.DateTime.utc,
       home_team_id: the_penguins.id,
       away_team_id: the_noodles.id
     )
 
-    :ok = Router.dispatch(schedule_game_command)
+    :ok = Router.dispatch(game)
+
+    check_attendance = CheckAttendance.create(game.game_id)
+    :ok = Router.dispatch(check_attendance)
 
     # Terrible HACK: the projection doesn't have time to run.
     :timer.sleep 100
