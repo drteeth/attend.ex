@@ -53,7 +53,7 @@ defmodule Attend.UserTest do
     player = Repo.get!(PlayerTeams, register_user_command.id)
     roster = Repo.get!(TeamRosters, the_penguins.id)
 
-    IO.inspect Attend.EventHandlers.TeamGames.get_team_games
+    IO.inspect Attend.EventHandlers.TeamGames.find(the_noodles.id)
   end
 
 end
