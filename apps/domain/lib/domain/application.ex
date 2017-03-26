@@ -9,6 +9,13 @@ defmodule Attend.Domain.Application do
     children = [
       supervisor(Attend.Repo, []),
       worker(Attend.EventHandlers.TeamGames, []),
+      worker(Commanded.ProcessManagers.ProcessRouter,
+        [
+          "AttendanceManager",
+          Attend.AttendanceManager,
+          Attend.Router,
+          [start_from: :origin],
+        ], id: :attendance_manager),
       worker(Commanded.Event.Handler, ["UserProjection", Attend.EventHandlers.UserProjection], id: :user_projection),
       worker(Commanded.Event.Handler, ["TeamProjection", Attend.EventHandlers.TeamProjection], id: :team_projection),
       worker(Commanded.Event.Handler, ["GameProjection", Attend.EventHandlers.TeamGames], id: :game_projection),

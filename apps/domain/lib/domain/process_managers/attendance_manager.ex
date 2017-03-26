@@ -1,6 +1,12 @@
 defmodule Attend.AttendanceManager do
   @behaviour Commanded.ProcessManagers.ProcessManager
 
+  alias Attend.{
+    UserRegistered,
+    AttendanceRequested,
+    GameScheduled,
+  }
+
   defstruct []
 
   # listen for UserRegistered => users
@@ -8,10 +14,8 @@ defmodule Attend.AttendanceManager do
   # listen for GameScheduled => game with the two teams
   # listen for AttendanceRequested => game_id
 
-  # I can start a process for the users and team info.
-  # Maybe I can start that as start_link() and use it as a central repo?
-  # Then I can start the PMs on GameScheduled
-
+  # def interested?(%UserRegistered{user_id: uid}), do: {:start, uid}
+  # def interested?(%AttendanceRequested{game_id: gid}), do: {:continue, gid}
   def interested?(%GameScheduled{game_id: gid}), do: {:start, gid}
   def interested?(%AttendanceRequested{game_id: gid}), do: {:continue, gid}
   def interested?(_event), do: false
@@ -22,6 +26,9 @@ defmodule Attend.AttendanceManager do
   def handle(state, %AttendanceRequested{} = event) do
   end
 
-  def apply(state) do
+  def apply(state, %GameScheduled{} = event) do
+  end
+
+  def apply(state, %AttendanceRequested{} = event) do
   end
 end

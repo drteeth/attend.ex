@@ -13,7 +13,7 @@ defmodule Attend.GameCommandHandler do
     )
   end
 
-  def handle(%Game{} = game, %CheckAttendance{} = command) do
-    game |> Game.check_attendance
+  def handle(%Game{id: game_id} = game, %CheckAttendance{game_id: game_id} = _command) do
+    game |> Game.check_attendance()
   end
 end
