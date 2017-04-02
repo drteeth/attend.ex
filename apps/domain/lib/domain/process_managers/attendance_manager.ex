@@ -20,15 +20,15 @@ defmodule Attend.AttendanceManager do
   def interested?(%AttendanceRequested{game_id: gid}), do: {:continue, gid}
   def interested?(_event), do: false
 
-  def handle(state, %GameScheduled{} = event) do
+  def handle(_state, %GameScheduled{} = _event) do
   end
 
-  def handle(state, %AttendanceRequested{} = event) do
+  def handle(_state, %AttendanceRequested{} = _event) do
   end
 
-  def apply(state, %GameScheduled{} = event) do
+  def apply(_state, %GameScheduled{} = _event) do
   end
 
-  def apply(state, %AttendanceRequested{} = event) do
+  def apply(_state, %AttendanceRequested{} = _event) do
   end
 end

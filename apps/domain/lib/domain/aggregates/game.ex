@@ -28,7 +28,6 @@ defmodule Attend.Game do
     }
   end
 
-  def apply(%Game{id: game_id} = _, %AttendanceRequested{} = event) do
-    IO.puts "attendance please!"
+  def apply(%Game{id: _game_id} = _, %AttendanceRequested{} = _event) do
   end
 end
