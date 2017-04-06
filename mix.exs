@@ -21,6 +21,8 @@ defmodule Attend.Mixfile do
   # Dependencies listed here are available only for this project
   # and cannot be accessed from applications inside the apps folder
   defp deps do
-    []
+    [
+      {:poison, "~> 3.0", override: true}
+    ]
   end
 end
