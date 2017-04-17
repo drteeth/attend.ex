@@ -1,7 +1,12 @@
 defmodule Attend.Team do
   defstruct [:id, :name, :players]
 
-  alias Attend.{Team, TeamRegistered, PlayerJoinedTeam}
+  alias Attend.{
+    Team,
+    TeamRegistered,
+    PlayerJoinedTeam,
+    AttendanceRequested
+  }
 
   def register(%Team{} = _team, id, name) do
     %Attend.TeamRegistered{team_id: id, name: name}
@@ -17,11 +22,25 @@ defmodule Attend.Team do
     end
   end
 
+  def check_attendance(team, game_id) do
+    Enum.map(team.players, fn player_id ->
+      AttendanceRequested.new(
+        game_id: game_id,
+        team_id: team.id,
+        player_id: player_id
+      )
+    end)
+  end
+
   def apply(%Team{} = team, %TeamRegistered{team_id: id, name: name}) do
     %Team{team | id: id, name: name, players: []}
   end
 
   def apply(%Team{id: id} = team, %PlayerJoinedTeam{team_id: id, user_id: user_id}) do
     %Team{team | players: [user_id | team.players]}
+  end
+
+  def apply(%Team{id: id} = team, %AttendanceRequested{} = _event) do
+    team
   end
 end

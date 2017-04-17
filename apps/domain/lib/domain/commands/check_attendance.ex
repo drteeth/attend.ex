@@ -1,8 +1,13 @@
 defmodule Attend.CheckAttendance do
-  defstruct [:game_id]
+  defstruct [:game_id, :team_id]
 
-  def create(game_id) do
-    %__MODULE__{game_id: game_id}
+  alias Attend.{Game, Team, CheckAttendance}
+
+  def new(%Game{id: game_id}, %Team{id: team_id}) do
+    new(game_id, team_id)
+  end
+  def new(game_id, team_id) do
+    %CheckAttendance{game_id: game_id, team_id: team_id}
   end
 
 end

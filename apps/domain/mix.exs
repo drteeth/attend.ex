@@ -11,6 +11,7 @@ defmodule Attend.Domain.Mixfile do
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     aliases: aliases(),
      deps: deps()]
   end
 
@@ -29,5 +30,9 @@ defmodule Attend.Domain.Mixfile do
       {:ecto, "~> 2.1"},
       {:postgrex, "~> 0.11"}
     ]
+  end
+
+  defp aliases do
+    ["reset": ["event_store.drop", "event_store.create", "ecto.drop", "ecto.create", "ecto.migrate"]]
   end
 end

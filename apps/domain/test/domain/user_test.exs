@@ -6,13 +6,9 @@ defmodule Attend.UserTest do
     RegisterUser,
     RegisterTeam,
     JoinTeam,
-    Repo,
     ScheduleGame,
     CheckAttendance,
   }
-
-  alias Attend.EventHandlers.TeamProjection.Team, as: TeamRosters
-  alias Attend.EventHandlers.TeamProjection.Player, as: PlayerTeams
 
   test "register user command" do
     register_user_command = RegisterUser.register(
@@ -48,7 +44,8 @@ defmodule Attend.UserTest do
 
     :ok = Router.dispatch(game)
 
-    check_attendance = CheckAttendance.create(game.game_id)
+    # Home team attendance check
+    check_attendance = CheckAttendance.new(game.game_id, the_penguins.id)
     :ok = Router.dispatch(check_attendance)
 
     # Terrible HACK: the projection doesn't have time to run.
