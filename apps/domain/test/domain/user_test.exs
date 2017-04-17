@@ -51,10 +51,9 @@ defmodule Attend.UserTest do
     # Terrible HACK: the projection doesn't have time to run.
     :timer.sleep 100
 
-    # player = Repo.get!(PlayerTeams, register_user_command.id)
-    # roster = Repo.get!(TeamRosters, the_penguins.id)
-
-    # Attend.EventHandlers.TeamGames.find(the_noodles.id)
+    # TODO: Handle user replying to an attendance check
+    # Team.confirm_attendance(token, status, message)
+    # AttendanceConfirmed(token, status, message)
   end
 
 end
