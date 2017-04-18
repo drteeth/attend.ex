@@ -14,10 +14,6 @@ defmodule Attend.Game do
     }
   end
 
-  def check_attendance(%Game{id: game_id}) do
-    %AttendanceRequested{game_id: game_id}
-  end
-
   def apply(%Game{} = _, %GameScheduled{} = event) do
     %Game{
       id: event.game_id,
@@ -26,9 +22,5 @@ defmodule Attend.Game do
       home_team_id: event.home_team_id,
       away_team_id: event.away_team_id
     }
-  end
-
-  def apply(%Game{id: _game_id} = game, %AttendanceRequested{} = _event) do
-    game
   end
 end
