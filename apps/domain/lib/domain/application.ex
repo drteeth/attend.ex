@@ -19,6 +19,7 @@ defmodule Attend.Domain.Application do
     children = [
       supervisor(Repo, []),
       worker(TeamGames, []),
+      worker(AttendanceChecker, []),
       worker(Handler, ["UserProjection", UserProjection], id: :user_projection),
       worker(Handler, ["TeamProjection", TeamProjection], id: :team_projection),
       worker(Handler, ["GameProjection", TeamGames], id: :game_projection),

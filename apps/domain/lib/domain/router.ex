@@ -4,7 +4,8 @@ defmodule Attend.Router do
   alias Attend.{
     RegisterUser, User, UserCommandHandler,
     RegisterTeam, Team, TeamCommandHandler, JoinTeam,
-    ScheduleGame, Game, GameCommandHandler, CheckAttendance
+    ScheduleGame, Game, GameCommandHandler, CheckAttendance,
+    ConfirmAttendance,
   }
 
   dispatch RegisterUser, to: UserCommandHandler,
@@ -13,7 +14,7 @@ defmodule Attend.Router do
   dispatch RegisterTeam, to: TeamCommandHandler,
     aggregate: Team, identity: :id
 
-  dispatch [JoinTeam, CheckAttendance], to: TeamCommandHandler,
+  dispatch [JoinTeam, CheckAttendance, ConfirmAttendance], to: TeamCommandHandler,
     aggregate: Team, identity: :team_id
 
   dispatch [ScheduleGame], to: GameCommandHandler,

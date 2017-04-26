@@ -1,7 +1,7 @@
 defmodule Attend.TeamCommandHandler do
   @behaviour Commanded.Commands.Handler
 
-  alias Attend.{Team, RegisterTeam, JoinTeam, CheckAttendance}
+  alias Attend.{Team, RegisterTeam, JoinTeam, CheckAttendance, ConfirmAttendance}
 
   def handle(%Team{} = team, %RegisterTeam{id: id, name: name}) do
     team |> Team.register(id, name)
@@ -13,6 +13,10 @@ defmodule Attend.TeamCommandHandler do
 
   def handle(%Team{} = team, %CheckAttendance{} = command) do
     team |> Team.check_attendance(command.game_id)
+  end
+
+  def handle(%Team{} = _team, %ConfirmAttendance{} = command) do
+    %AttendanceConfirmed{team_id}
   end
 
 end
