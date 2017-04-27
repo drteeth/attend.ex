@@ -5,7 +5,7 @@ defmodule Attend.AttendanceChecker do
     Game,
     Team,
     User,
-    AttendanceRequested,
+    Team.AttendanceRequested,
   }
   alias Commanded.Aggregates.{Aggregate, Registry}
 
