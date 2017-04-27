@@ -2,13 +2,13 @@ defmodule Attend.EventHandlers.UserProjection do
   @behaviour Commanded.Event.Handler
 
   alias Attend.{
-    UserRegistered,
-    ReadModel.User,
+    User,
+    ReadModel,
     Repo,
   }
 
-  def handle(%UserRegistered{user_id: id, name: name, email: email}, _metadata) do
-    case Repo.insert(%User{id: id, name: name, email: email}) do
+  def handle(%User.Registered{user_id: id, name: name, email: email}, _metadata) do
+    case Repo.insert(%ReadModel.User{id: id, name: name, email: email}) do
       {:ok, _} -> :ok
       e -> e
     end

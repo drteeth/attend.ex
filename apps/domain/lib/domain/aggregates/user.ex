@@ -1,17 +1,23 @@
 defmodule Attend.User do
   defstruct [:id, :name, :email]
 
-  alias Attend.{UserRegistered, User}
+  alias Attend.User
+
+  defmodule Registered, do: defstruct [
+        user_id: nil,
+        name: nil,
+        email: nil
+      ]
 
   def register(%User{id: nil} = _user, id, name, email) do
-    %UserRegistered{user_id: id, name: name, email: email}
+    %Registered{user_id: id, name: name, email: email}
   end
 
   def register(%User{}, _, _, _) do
     {:error, :already_registered}
   end
 
-  def apply(%User{} = user, %UserRegistered{user_id: id, name: name, email: email}) do
+  def apply(%User{} = user, %Registered{user_id: id, name: name, email: email}) do
     %User{user | id: id, name: name, email: email}
   end
 

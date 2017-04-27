@@ -16,7 +16,7 @@ defmodule Attend.TeamCommandHandler do
   end
 
   def handle(%Team{} = _team, %ConfirmAttendance{} = command) do
-    %AttendanceConfirmed{team_id}
+    %AttendanceConfirmed{team_id: command.team_id}
   end
 
 end
