@@ -2,7 +2,7 @@ defmodule Attend.EventHandlers.TeamGames do
   @behaviour Commanded.Event.Handler
 
   alias Attend.{
-    GameScheduled,
+    Game.GameScheduled,
     Team.TeamRegistered,
   }
 

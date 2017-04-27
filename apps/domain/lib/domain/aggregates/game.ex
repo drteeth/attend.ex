@@ -1,9 +1,13 @@
 defmodule Attend.Game do
   defstruct [:id, :location, :start, :home_team_id, :away_team_id]
 
-  alias Attend.{Game, GameScheduled, AttendanceRequested}
+  alias Attend.Game
 
-  def schedule(%__MODULE__{} = _, id, location, start, home_team_id, away_team_id) do
+  defmodule GameScheduled do
+    defstruct [:game_id, :location, :start, :home_team_id, :away_team_id]
+  end
+
+  def schedule(%Game{} = _, id, location, start, home_team_id, away_team_id) do
     # TODO ensure the game is in the future
     %GameScheduled{
       game_id: id,

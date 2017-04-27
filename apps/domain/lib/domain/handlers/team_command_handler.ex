@@ -15,7 +15,7 @@ defmodule Attend.TeamCommandHandler do
     team |> Team.check_attendance(command.game_id)
   end
 
-  def handle(%Team{} = _team, %ConfirmAttendance{} = command) do
+  def handle(%Team{} = _team, %ConfirmAttendance{} = _command) do
     # %AttendanceConfirmed{team_id: command.team_id}
   end
 
