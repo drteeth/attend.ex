@@ -4,7 +4,7 @@ defmodule Attend.EventHandlers.TeamProjection do
   alias Attend.{
     User.UserRegistered,
     Team.TeamRegistered,
-    PlayerJoinedTeam,
+    Team.PlayerJoinedTeam,
     Repo,
     }
 

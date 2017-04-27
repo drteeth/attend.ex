@@ -56,6 +56,8 @@ defmodule Attend.EventHandlers.TeamGames do
     :ok
   end
 
+  def handle(_event, _metadata), do: :ok
+
   def all do
     Agent.get(__MODULE__, fn state -> Map.values(state) end)
   end
@@ -64,6 +66,5 @@ defmodule Attend.EventHandlers.TeamGames do
     Agent.get(__MODULE__, fn state -> Map.get(state, team_id) end)
   end
 
-  def handle(_event, _metadata), do: :ok
 
 end
