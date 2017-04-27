@@ -2,8 +2,8 @@ defmodule Attend.EventHandlers.TeamProjection do
   @behaviour Commanded.Event.Handler
 
   alias Attend.{
-    User,
-    TeamRegistered,
+    User.UserRegistered,
+    Team.TeamRegistered,
     PlayerJoinedTeam,
     Repo,
     }
@@ -29,7 +29,7 @@ defmodule Attend.EventHandlers.TeamProjection do
     end
   end
 
-  def handle(%User.Registered{user_id: user_id, name: name, email: email}, _metadata) do
+  def handle(%UserRegistered{user_id: user_id, name: name, email: email}, _metadata) do
     Repo.insert!(%Player{id: user_id, name: name, email: email, teams: []})
     :ok
   end

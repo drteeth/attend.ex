@@ -3,13 +3,14 @@ defmodule Attend.Team do
 
   alias Attend.{
     Team,
-    TeamRegistered,
     PlayerJoinedTeam,
     AttendanceRequested
   }
 
+  defmodule TeamRegistered, do: defstruct [:team_id, :name]
+
   def register(%Team{} = _team, id, name) do
-    %Attend.TeamRegistered{team_id: id, name: name}
+    %TeamRegistered{team_id: id, name: name}
   end
 
   def add_player(%Team{} = team, team_id, user_id) do

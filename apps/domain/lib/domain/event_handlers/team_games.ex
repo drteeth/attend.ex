@@ -3,7 +3,7 @@ defmodule Attend.EventHandlers.TeamGames do
 
   alias Attend.{
     GameScheduled,
-    TeamRegistered
+    Team.TeamRegistered,
   }
 
   defmodule TeamGames  do
