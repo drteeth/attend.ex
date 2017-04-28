@@ -3,6 +3,8 @@ defmodule Attend.Attendance do
 
   alias Attend.{
     Attendance,
+    CheckAttendance,
+    ConfirmAttendance,
     AttendanceRequested,
     Team,
   }
@@ -17,25 +19,25 @@ defmodule Attend.Attendance do
     defstruct [:id, :status, :message]
   end
 
-  def check_attendance(%Attendance{} = _, id, game_id, team_id) do
-    {:ok, team_server} = Registry.open_aggregate(Team, team_id)
+  def execute(%Attendance{} = _, %CheckAttendance{} = command) do
+    {:ok, team_server} = Registry.open_aggregate(Team, command.team_id)
     team = Aggregate.aggregate_state(team_server)
 
     Enum.map(team.players, fn player_id ->
       %AttendanceRequested{
-        id: id,
-        game_id: game_id,
-        team_id: team_id,
+        id: command.id,
+        game_id: command.game_id,
+        team_id: command.team_id,
         player_id: player_id,
       }
     end)
   end
 
-  def confirm(%Attendance{} = attendance, status, message) do
+  def execute(%Attendance{} = attendance, %ConfirmAttendance{} = command) do
     %AttendanceConfirmed{
       id: attendance.id,
-      status: status,
-      message: message,
+      status: command.status,
+      message: command.message,
     }
   end
 
