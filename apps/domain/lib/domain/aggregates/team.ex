@@ -5,7 +5,24 @@ defmodule Attend.Team do
     Team,
     RegisterTeam,
     JoinTeam,
+    Id,
   }
+
+  defmodule RegisterTeam do
+    defstruct [:team_id, :name]
+
+    def new(name) do
+      %RegisterTeam{team_id: Id.generate(), name: name}
+    end
+  end
+
+  defmodule JoinTeam do
+    defstruct [:user_id, :team_id]
+
+    def new(user_id, team_id) do
+      %JoinTeam{user_id: user_id, team_id: team_id}
+    end
+  end
 
   defmodule TeamRegistered, do: defstruct [:team_id, :name]
   defmodule PlayerJoinedTeam, do: defstruct [:team_id, :user_id]

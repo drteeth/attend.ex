@@ -3,13 +3,29 @@ defmodule Attend.Attendance do
 
   alias Attend.{
     Attendance,
-    CheckAttendance,
     ConfirmAttendance,
     AttendanceRequested,
     Team,
+    Id,
   }
 
   alias Commanded.Aggregates.{Aggregate, Registry}
+
+  defmodule CheckAttendance do
+    defstruct [:token, :game_id, :team_id]
+
+    def new(game_id, team_id) do
+      %CheckAttendance{token: Id.generate(), game_id: game_id, team_id: team_id}
+    end
+  end
+
+  defmodule ConfirmAttendance do
+    defstruct [:token, :status, :message]
+
+    def new(token, status, message) do
+      %ConfirmAttendance{token: token, status: status, message: message}
+    end
+  end
 
   defmodule AttendanceRequested do
     defstruct [:token, :game_id, :player_id, :team_id]

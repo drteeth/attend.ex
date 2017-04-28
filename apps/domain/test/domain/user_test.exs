@@ -4,11 +4,11 @@ defmodule Attend.UserTest do
   alias Attend.{
     Router,
     RegisterUser,
-    RegisterTeam,
-    JoinTeam,
+    Team.RegisterTeam,
+    Team.JoinTeam,
     ScheduleGame,
-    CheckAttendance,
-    ConfirmAttendance
+    Attendance.CheckAttendance,
+    Attendance.ConfirmAttendance
   }
 
   test "register user command" do
@@ -18,22 +18,22 @@ defmodule Attend.UserTest do
     )
     :ok = Router.dispatch(register_user_command)
 
-    the_penguins = RegisterTeam.register(name: "The Penguins")
+    the_penguins = RegisterTeam.new("The Penguins")
     :ok = Router.dispatch(the_penguins)
 
-    join_team_command = JoinTeam.create(
-      user_id: register_user_command.user_id,
-      team_id: the_penguins.team_id,
+    join_team_command = JoinTeam.new(
+      register_user_command.user_id,
+      the_penguins.team_id
     )
     :ok = Router.dispatch(join_team_command)
 
-    join_team_command = JoinTeam.create(
-      user_id: register_user_command.user_id,
-      team_id: the_penguins.team_id,
+    join_team_command = JoinTeam.new(
+      register_user_command.user_id,
+      the_penguins.team_id
     )
     {:error, _} = Router.dispatch(join_team_command)
 
-    the_noodles = RegisterTeam.register(name: "The Noodles")
+    the_noodles = RegisterTeam.new("The Noodles")
     :ok = Router.dispatch(the_noodles)
 
     game = ScheduleGame.create(
@@ -52,7 +52,7 @@ defmodule Attend.UserTest do
     :timer.sleep 100
 
     [email] = Attend.AttendanceChecker.sent_mail()
-    confirm_command = ConfirmAttendance.confirm_attendance(email.token, :in, "I'll be 5 minutes late")
+    confirm_command = ConfirmAttendance.new(email.token, :in, "I'll be 5 minutes late")
     :ok = Router.dispatch(confirm_command)
 
     # Terrible HACK: the projection doesn't have time to run.
