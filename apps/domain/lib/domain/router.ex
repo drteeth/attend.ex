@@ -2,9 +2,9 @@ defmodule Attend.Router do
   use Commanded.Commands.Router
 
   alias Attend.{
-    User, RegisterUser,
+    User, User.RegisterUser,
     Team, Team.RegisterTeam, Team.JoinTeam,
-    Game, ScheduleGame,
+    Game, Game.ScheduleGame,
     Attendance, Attendance.CheckAttendance, Attendance.ConfirmAttendance
   }
 

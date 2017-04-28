@@ -3,19 +3,16 @@ defmodule Attend.UserTest do
 
   alias Attend.{
     Router,
-    RegisterUser,
+    User.RegisterUser,
     Team.RegisterTeam,
     Team.JoinTeam,
-    ScheduleGame,
+    Game.ScheduleGame,
     Attendance.CheckAttendance,
     Attendance.ConfirmAttendance
   }
 
   test "register user command" do
-    register_user_command = RegisterUser.register(
-      name: "Bob Ross",
-      email: "user@example.com"
-    )
+    register_user_command = RegisterUser.new("Bob Ross", "user@example.com")
     :ok = Router.dispatch(register_user_command)
 
     the_penguins = RegisterTeam.new("The Penguins")
@@ -36,7 +33,7 @@ defmodule Attend.UserTest do
     the_noodles = RegisterTeam.new("The Noodles")
     :ok = Router.dispatch(the_noodles)
 
-    game = ScheduleGame.create(
+    game = ScheduleGame.new(
       location: "Monarch Park: Field 1",
       start: Ecto.DateTime.utc,
       home_team_id: the_penguins.team_id,

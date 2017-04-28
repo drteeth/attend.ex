@@ -3,6 +3,19 @@ defmodule Attend.User do
 
   alias Attend.{User, RegisterUser}
 
+  defmodule RegisterUser do
+    defstruct [:user_id, :name, :email]
+
+    def new(name, email) do
+      # TODO handle :email_already_registered
+      %RegisterUser{
+        user_id: Attend.Id.generate(),
+        name: name,
+        email: email
+      }
+    end
+  end
+
   defmodule UserRegistered do
     defstruct [:user_id, :name, :email]
   end

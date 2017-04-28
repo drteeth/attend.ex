@@ -66,5 +66,4 @@ defmodule Attend.EventHandlers.TeamGames do
     Agent.get(__MODULE__, fn state -> Map.get(state, team_id) end)
   end
 
-
 end
