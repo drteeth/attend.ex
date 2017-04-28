@@ -22,14 +22,14 @@ defmodule Attend.UserTest do
     :ok = Router.dispatch(the_penguins)
 
     join_team_command = JoinTeam.create(
-      user_id: register_user_command.id,
-      team_id: the_penguins.id,
+      user_id: register_user_command.user_id,
+      team_id: the_penguins.team_id,
     )
     :ok = Router.dispatch(join_team_command)
 
     join_team_command = JoinTeam.create(
-      user_id: register_user_command.id,
-      team_id: the_penguins.id,
+      user_id: register_user_command.user_id,
+      team_id: the_penguins.team_id,
     )
     {:error, _} = Router.dispatch(join_team_command)
 
@@ -39,14 +39,14 @@ defmodule Attend.UserTest do
     game = ScheduleGame.create(
       location: "Monarch Park: Field 1",
       start: Ecto.DateTime.utc,
-      home_team_id: the_penguins.id,
-      away_team_id: the_noodles.id
+      home_team_id: the_penguins.team_id,
+      away_team_id: the_noodles.team_id
     )
 
     :ok = Router.dispatch(game)
 
     # Home team attendance check
-    check_attendance = CheckAttendance.new(game.game_id, the_penguins.id)
+    check_attendance = CheckAttendance.new(game.game_id, the_penguins.team_id)
     :ok = Router.dispatch(check_attendance)
 
     :timer.sleep 100

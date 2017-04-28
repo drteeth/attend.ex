@@ -1,8 +1,10 @@
 defmodule Attend.JoinTeam do
   defstruct [:user_id, :team_id]
 
+  alias Attend.JoinTeam
+
   def create(user_id: user_id, team_id: team_id) do
-    %__MODULE__ {
+    %JoinTeam{
       user_id: user_id,
       team_id: team_id,
     }

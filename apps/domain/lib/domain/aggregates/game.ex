@@ -1,20 +1,23 @@
 defmodule Attend.Game do
   defstruct [:id, :location, :start, :home_team_id, :away_team_id]
 
-  alias Attend.Game
+  alias Attend.{
+    Game,
+    ScheduleGame
+  }
 
   defmodule GameScheduled do
     defstruct [:game_id, :location, :start, :home_team_id, :away_team_id]
   end
 
-  def schedule(%Game{} = _, id, location, start, home_team_id, away_team_id) do
+  def execute(%Game{} = _, %ScheduleGame{} = command) do
     # TODO ensure the game is in the future
     %GameScheduled{
-      game_id: id,
-      location: location,
-      start: start,
-      home_team_id: home_team_id,
-      away_team_id: away_team_id
+      game_id: command.game_id,
+      location: command.location,
+      start: command.start,
+      home_team_id: command.home_team_id,
+      away_team_id: command.away_team_id
     }
   end
 

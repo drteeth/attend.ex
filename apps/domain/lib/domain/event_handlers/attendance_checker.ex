@@ -26,7 +26,7 @@ defmodule Attend.AttendanceChecker do
     team = Aggregate.aggregate_state(team_server)
 
     mail(%{
-          token: event.id,
+          token: event.token,
           player_id: event.player_id,
           player_name: player.name,
           email: player.email,

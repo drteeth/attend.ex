@@ -12,11 +12,11 @@ defmodule Attend.Attendance do
   alias Commanded.Aggregates.{Aggregate, Registry}
 
   defmodule AttendanceRequested do
-    defstruct [:id, :game_id, :player_id, :team_id]
+    defstruct [:token, :game_id, :player_id, :team_id]
   end
 
   defmodule AttendanceConfirmed do
-    defstruct [:id, :status, :message]
+    defstruct [:token, :status, :message]
   end
 
   def execute(%Attendance{} = _, %CheckAttendance{} = command) do
@@ -25,7 +25,7 @@ defmodule Attend.Attendance do
 
     Enum.map(team.players, fn player_id ->
       %AttendanceRequested{
-        id: command.id,
+        token: command.token,
         game_id: command.game_id,
         team_id: command.team_id,
         player_id: player_id,
@@ -35,7 +35,7 @@ defmodule Attend.Attendance do
 
   def execute(%Attendance{} = attendance, %ConfirmAttendance{} = command) do
     %AttendanceConfirmed{
-      id: attendance.id,
+      token: attendance.id,
       status: command.status,
       message: command.message,
     }
@@ -43,7 +43,7 @@ defmodule Attend.Attendance do
 
   def apply(%Attendance{} = _, %AttendanceRequested{} = event) do
     %Attendance{
-      id: event.id,
+      id: event.token,
       game_id: event.game_id,
       team_id: event.team_id,
       player_id: event.player_id,
