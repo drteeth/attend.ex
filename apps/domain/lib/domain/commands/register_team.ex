@@ -1,10 +1,9 @@
 defmodule Attend.RegisterTeam do
   defstruct [:id, :name]
 
+  alias Attend.RegisterTeam
+
   def register(name: name) do
-    %__MODULE__{
-      id: Attend.Id.generate(),
-      name: name
-    }
+    %RegisterTeam{id: Attend.Id.generate(), name: name}
   end
 end

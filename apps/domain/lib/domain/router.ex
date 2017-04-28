@@ -5,7 +5,7 @@ defmodule Attend.Router do
     RegisterUser, User, UserCommandHandler,
     RegisterTeam, Team, TeamCommandHandler, JoinTeam,
     ScheduleGame, Game, GameCommandHandler, CheckAttendance,
-    ConfirmAttendance,
+    ConfirmAttendance, Attendance, AttendanceCommandHandler,
   }
 
   dispatch RegisterUser, to: UserCommandHandler,
@@ -14,10 +14,13 @@ defmodule Attend.Router do
   dispatch RegisterTeam, to: TeamCommandHandler,
     aggregate: Team, identity: :id
 
-  dispatch [JoinTeam, CheckAttendance, ConfirmAttendance], to: TeamCommandHandler,
+  dispatch [JoinTeam], to: TeamCommandHandler,
     aggregate: Team, identity: :team_id
 
   dispatch [ScheduleGame], to: GameCommandHandler,
     aggregate: Game, identity: :game_id
+
+  dispatch [CheckAttendance, ConfirmAttendance], to: AttendanceCommandHandler,
+    aggregate: Attendance, identity: :id
 
 end

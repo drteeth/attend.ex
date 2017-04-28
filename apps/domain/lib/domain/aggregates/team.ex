@@ -8,7 +8,6 @@ defmodule Attend.Team do
 
   defmodule TeamRegistered, do: defstruct [:team_id, :name]
   defmodule PlayerJoinedTeam, do: defstruct [:team_id, :user_id]
-  defmodule AttendanceRequested, do: defstruct [:token, :game_id, :player_id, :team_id]
 
   def register(%Team{} = _team, id, name) do
     %TeamRegistered{team_id: id, name: name}
@@ -24,26 +23,11 @@ defmodule Attend.Team do
     end
   end
 
-  def check_attendance(team, game_id) do
-    Enum.map(team.players, fn player_id ->
-      %AttendanceRequested{
-        token: Attend.Id.generate(),
-        game_id: game_id,
-        team_id: team.id,
-        player_id: player_id,
-      }
-    end)
-  end
-
   def apply(%Team{} = team, %TeamRegistered{team_id: id, name: name}) do
     %Team{team | id: id, name: name, players: []}
   end
 
   def apply(%Team{id: id} = team, %PlayerJoinedTeam{team_id: id, user_id: user_id}) do
     %Team{team | players: [user_id | team.players]}
-  end
-
-  def apply(%Team{id: _} = team, %AttendanceRequested{} = _event) do
-    team
   end
 end
