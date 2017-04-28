@@ -1,4 +1,4 @@
-defmodule Attend.ReadModel.User do
+defmodule Attend.UserReadModel do
   use Ecto.Schema
 
   @primary_key {:id, :binary_id, autogenerate: false}

@@ -1,7 +1,7 @@
 defmodule Attend.User do
   defstruct [:id, :name, :email]
 
-  alias Attend.{User, RegisterUser}
+  alias Attend.{User, RegisterUser, Id}
 
   defmodule RegisterUser do
     defstruct [:user_id, :name, :email]
@@ -9,7 +9,7 @@ defmodule Attend.User do
     def new(name, email) do
       # TODO handle :email_already_registered
       %RegisterUser{
-        user_id: Attend.Id.generate(),
+        user_id: Id.generate(),
         name: name,
         email: email
       }
@@ -27,8 +27,8 @@ defmodule Attend.User do
     {:error, :already_registered}
   end
 
-  def apply(%User{} = user, %UserRegistered{user_id: id, name: name, email: email}) do
-    %User{user | id: id, name: name, email: email}
+  def apply(%User{} = user, %UserRegistered{} = event) do
+    %User{user | id: event.id, name: event.name, email: event.email}
   end
 
 end

@@ -3,7 +3,8 @@ defmodule Attend.Game do
 
   alias Attend.{
     Game,
-    ScheduleGame
+    ScheduleGame,
+    Id,
   }
 
   defmodule ScheduleGame do
@@ -11,7 +12,7 @@ defmodule Attend.Game do
 
     def new(location: location, start: start, home_team_id: home_team_id, away_team_id: away_team_id) do
       %ScheduleGame{
-        game_id: Attend.Id.generate(),
+        game_id: Id.generate(),
         location: location,
         start: start,
         home_team_id: home_team_id,
