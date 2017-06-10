@@ -12,56 +12,34 @@ defmodule Attend.Attendance do
   alias Commanded.Aggregates.{Aggregate, Registry}
 
   # Commands
-  defmodule CheckAttendance do
-    defstruct [:token, :game_id, :team_id]
-
-    def new(game_id, team_id) do
-      %CheckAttendance{token: Id.generate(), game_id: game_id, team_id: team_id}
-    end
-  end
-
-  defmodule MarkAttendanceRequestSent, do: defstruct [:token]
+  defmodule MarkAttendanceRequestSent, do: defstruct [:attendance_id]
 
   defmodule ConfirmAttendance do
-    defstruct [:token, :status, :message]
+    defstruct [:attendance_id, :status, :message]
 
-    def new(token, status, message) do
-      %ConfirmAttendance{token: token, status: status, message: message}
+    def new(attendance_id, status, message) do
+      %ConfirmAttendance{attendance_id: attendance_id, status: status, message: message}
     end
   end
 
   # Events
   defmodule AttendanceRequested do
-    defstruct [:token, :game_id, :player_id, :team_id]
+    defstruct [:attendance_id, :game_id, :player_id, :team_id]
   end
 
-  defmodule AttendanceRequestSent, do: defstruct [:token]
+  defmodule AttendanceRequestSent, do: defstruct [:attendance_id]
 
   defmodule AttendanceConfirmed do
-    defstruct [:token, :status, :message]
-  end
-
-  def execute(%Attendance{} = _, %CheckAttendance{} = command) do
-    {:ok, team_server} = Registry.open_aggregate(Team, command.team_id)
-    team = Aggregate.aggregate_state(team_server)
-
-    Enum.map(team.players, fn player_id ->
-      %AttendanceRequested{
-        token: command.token,
-        game_id: command.game_id,
-        team_id: command.team_id,
-        player_id: player_id,
-      }
-    end)
+    defstruct [:attendance_id, :status, :message]
   end
 
   def execute(%Attendance{} = attendance, %MarkAttendanceRequestSent{} = command) do
-    %AttendanceRequestSent{token: command.token}
+    %AttendanceRequestSent{attendance_id: command.attendance_id}
   end
 
   def execute(%Attendance{} = attendance, %ConfirmAttendance{} = command) do
     %AttendanceConfirmed{
-      token: attendance.id,
+      attendance_id: attendance.id,
       status: command.status,
       message: command.message,
     }
@@ -69,7 +47,7 @@ defmodule Attend.Attendance do
 
   def apply(%Attendance{} = _, %AttendanceRequested{} = event) do
     %Attendance{
-      id: event.token,
+      id: event.attendance_id,
       game_id: event.game_id,
       team_id: event.team_id,
       player_id: event.player_id,

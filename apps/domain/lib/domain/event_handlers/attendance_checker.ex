@@ -16,11 +16,11 @@ defmodule Attend.AttendanceChecker do
 
   alias Commanded.Aggregates.{Aggregate, Registry}
 
-  defstruct [:token, :status]
+  defstruct [:attendance_id, :status]
 
-  def interested?(%AttendanceRequested{token: token}), do: {:start, token}
-  def interested?(%AttendanceRequestSent{token: token}), do: {:continue, token}
-  def interested?(%AttendanceConfirmed{token: token}), do: {:stop, token}
+  def interested?(%AttendanceRequested{attendance_id: id}), do: {:start, id}
+  def interested?(%AttendanceRequestSent{attendance_id: id}), do: {:continue, id}
+  def interested?(%AttendanceConfirmed{attendance_id: id}), do: {:stop, id}
   def interested?(_event), do: false
 
   def handle(_state, %AttendanceRequested{} = event) do
@@ -38,7 +38,7 @@ defmodule Attend.AttendanceChecker do
     team = Aggregate.aggregate_state(team_server)
 
     attrs = %{
-      token: event.token,
+      attendance_id: event.attendance_id,
       player_id: event.player_id,
       player_name: player.name,
       email: player.email,
@@ -50,7 +50,7 @@ defmodule Attend.AttendanceChecker do
 
     :ok = mail(attrs)
     case mail(attrs) do
-      :ok -> [%MarkAttendanceRequestSent{token: event.token}]
+      :ok -> [%MarkAttendanceRequestSent{attendance_id: event.attendance_id}]
       _ -> []
     end
   end
@@ -64,7 +64,7 @@ defmodule Attend.AttendanceChecker do
   end
 
   def apply(state, %AttendanceRequested{} = event) do
-    %{ state | status: :requesting, token: event.token }
+    %{ state | status: :requesting, attendance_id: event.attendance_id }
   end
 
   def apply(state, %AttendanceRequestSent{} = _event) do

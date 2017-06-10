@@ -6,8 +6,8 @@ defmodule Attend.UserTest do
     User.RegisterUser,
     Team.RegisterTeam,
     Team.JoinTeam,
+    Team.CheckAttendance,
     Game.ScheduleGame,
-    Attendance.CheckAttendance,
   }
 
   test "register user command" do
