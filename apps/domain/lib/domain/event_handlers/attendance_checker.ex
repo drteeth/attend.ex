@@ -55,34 +55,27 @@ defmodule Attend.AttendanceChecker do
     end
   end
 
-  def handle(state, %AttendanceRequestSent{} = _event) do
-    IO.inspect state, label: :handle_sent
+  def handle(_state, %AttendanceRequestSent{} = _event) do
     []
   end
 
-  def handle(state, %AttendanceConfirmed{}) do
-    IO.inspect state, label: :handle_confirmed
+  def handle(_state, %AttendanceConfirmed{}) do
     []
   end
 
   def apply(state, %AttendanceRequested{} = event) do
-    IO.inspect state, label: :apply_requested
     %{ state | status: :requesting, token: event.token }
   end
 
   def apply(state, %AttendanceRequestSent{} = _event) do
-    IO.inspect state, label: :apply_sent
     %{ state | status: :sent }
   end
 
   def apply(state, %AttendanceConfirmed{} = _event) do
-    IO.inspect state, label: :apply_confirmed
     %{ state | status: :confirmed }
   end
 
   defp mail(_args) do
-    # IO.inspect(args, label: :todo_mail)
-    # Agent.update(__MODULE__, fn sent -> Map.put(sent, args.token, args) end)
     # TODO: implement actually sending an email
     :ok
   end

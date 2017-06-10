@@ -8,7 +8,6 @@ defmodule Attend.UserTest do
     Team.JoinTeam,
     Game.ScheduleGame,
     Attendance.CheckAttendance,
-    Attendance.ConfirmAttendance
   }
 
   test "register user command" do
@@ -46,13 +45,12 @@ defmodule Attend.UserTest do
     check_attendance = CheckAttendance.new(game.game_id, the_penguins.team_id)
     :ok = Router.dispatch(check_attendance)
 
-    :timer.sleep 100
-
-    # confirm_command = ConfirmAttendance.new(email.token, :in, "I'll be 5 minutes late")
-    # :ok = Router.dispatch(confirm_command)
-
     # # Terrible HACK: the projection doesn't have time to run.
     :timer.sleep 100
+
+    # TODO: figure out how to reply to an attendance check
+    # confirm_command = ConfirmAttendance.new(email.token, :in, "I'll be 5 minutes late")
+    # :ok = Router.dispatch(confirm_command)
   end
 
 end
