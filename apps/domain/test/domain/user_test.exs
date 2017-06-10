@@ -48,11 +48,10 @@ defmodule Attend.UserTest do
 
     :timer.sleep 100
 
-    [email] = Attend.AttendanceChecker.sent_mail()
-    confirm_command = ConfirmAttendance.new(email.token, :in, "I'll be 5 minutes late")
-    :ok = Router.dispatch(confirm_command)
+    # confirm_command = ConfirmAttendance.new(email.token, :in, "I'll be 5 minutes late")
+    # :ok = Router.dispatch(confirm_command)
 
-    # Terrible HACK: the projection doesn't have time to run.
+    # # Terrible HACK: the projection doesn't have time to run.
     :timer.sleep 100
   end
 

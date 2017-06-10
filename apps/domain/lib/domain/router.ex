@@ -5,12 +5,12 @@ defmodule Attend.Router do
     User, User.RegisterUser,
     Team, Team.RegisterTeam, Team.JoinTeam,
     Game, Game.ScheduleGame,
-    Attendance, Attendance.CheckAttendance, Attendance.ConfirmAttendance
+    Attendance, Attendance.CheckAttendance, Attendance.ConfirmAttendance, Attendance.MarkAttendanceRequestSent,
   }
 
   dispatch [RegisterUser], to: User, identity: :user_id
   dispatch [RegisterTeam, JoinTeam], to: Team, identity: :team_id
   dispatch [ScheduleGame], to: Game, identity: :game_id
-  dispatch [CheckAttendance, ConfirmAttendance], to: Attendance, identity: :token
+  dispatch [CheckAttendance, ConfirmAttendance, MarkAttendanceRequestSent], to: Attendance, identity: :token
 
 end

@@ -28,7 +28,7 @@ defmodule Attend.User do
   end
 
   def apply(%User{} = user, %UserRegistered{} = event) do
-    %User{user | id: event.id, name: event.name, email: event.email}
+    %User{user | id: event.user_id, name: event.name, email: event.email}
   end
 
 end

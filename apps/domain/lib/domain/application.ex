@@ -12,6 +12,7 @@ defmodule Attend.Domain.Application do
   }
 
   alias Commanded.Event.Handler
+  alias Commanded.ProcessManagers.ProcessRouter
 
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
@@ -19,11 +20,11 @@ defmodule Attend.Domain.Application do
     children = [
       supervisor(Repo, []),
       worker(TeamGames, []),
-      worker(AttendanceChecker, []),
+      worker(ProcessRouter, ["AttendanceChecker", AttendanceChecker, Attend.Router, [start_from: :current]],
+        id: :attendance_checker),
       worker(Handler, ["UserProjection", UserProjection], id: :user_projection),
       worker(Handler, ["TeamProjection", TeamProjection], id: :team_projection),
       worker(Handler, ["GameProjection", TeamGames], id: :game_projection),
-      worker(Handler, ["AttendanceChecker", AttendanceChecker], id: :attendance_checker),
     ]
 
     opts = [strategy: :one_for_one, name: Attend.Domain.Supervisor]
