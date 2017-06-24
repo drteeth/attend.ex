@@ -18,7 +18,11 @@ defmodule Attend.Attendance do
     defstruct [:attendance_id, :status, :message]
 
     def new(attendance_id, status, message) do
-      %ConfirmAttendance{attendance_id: attendance_id, status: status, message: message}
+      %ConfirmAttendance{
+        attendance_id: attendance_id,
+        status: status,
+        message: message
+      }
     end
   end
 
@@ -39,7 +43,7 @@ defmodule Attend.Attendance do
 
   def execute(%Attendance{} = attendance, %ConfirmAttendance{} = command) do
     %AttendanceConfirmed{
-      attendance_id: attendance.id,
+      attendance_id: command.attendance_id,
       status: command.status,
       message: command.message,
     }

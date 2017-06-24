@@ -8,7 +8,12 @@ defmodule Attend.UserTest do
     Team.JoinTeam,
     Team.CheckAttendance,
     Game.ScheduleGame,
+    UserReadModel,
+    Repo,
+    Attendance.ConfirmAttendance,
   }
+
+  import Ecto.Query, only: [from: 2]
 
   test "register user command" do
     register_user_command = RegisterUser.new("Bob Ross", "user@example.com")
@@ -48,9 +53,18 @@ defmodule Attend.UserTest do
     # # Terrible HACK: the projection doesn't have time to run.
     :timer.sleep 100
 
-    # TODO: figure out how to reply to an attendance check
-    # confirm_command = ConfirmAttendance.new(email.token, :in, "I'll be 5 minutes late")
-    # :ok = Router.dispatch(confirm_command)
+    bob_ross_id = register_user_command.user_id
+    query = from u in UserReadModel,
+      where: u.id == ^bob_ross_id,
+      select: u
+
+    user = Repo.one(query)
+    token = hd(user.attendance_checks)
+
+    confirm_command = ConfirmAttendance.new(token, :in, "I'll be 5 minutes late")
+    :ok = Router.dispatch(confirm_command)
+
+    :timer.sleep 100
   end
 
 end
