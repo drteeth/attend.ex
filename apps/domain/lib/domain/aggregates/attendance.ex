@@ -9,7 +9,10 @@ defmodule Attend.Attendance do
     Id,
   }
 
-  alias Commanded.Aggregates.{Aggregate, Registry}
+  alias Commanded.Aggregates.{
+    Aggregate,
+    Registry
+  }
 
   # Commands
   defmodule MarkAttendanceRequestSent, do: defstruct [:attendance_id]
@@ -31,7 +34,9 @@ defmodule Attend.Attendance do
     defstruct [:attendance_id, :game_id, :player_id, :team_id]
   end
 
-  defmodule AttendanceRequestSent, do: defstruct [:attendance_id]
+  defmodule AttendanceRequestSent do
+    defstruct [:attendance_id]
+  end
 
   defmodule AttendanceConfirmed do
     defstruct [:attendance_id, :status, :message]

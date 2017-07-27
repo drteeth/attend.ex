@@ -1,4 +1,5 @@
 defmodule Attend.Game do
+  # TODO: Implement cancelation of games
   defstruct [:id, :location, :start, :home_team_id, :away_team_id]
 
   alias Attend.{

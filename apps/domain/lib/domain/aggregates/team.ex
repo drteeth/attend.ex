@@ -53,6 +53,9 @@ defmodule Attend.Team do
   end
 
   def execute(%Team{} = team, %CheckAttendance{} = command) do
+    # TODO: consider firing an event for the whole check here also
+    # TeamAttendanceRequested. Follow up with the ones for each player
+    # each of those individual requests could also reference the team one.
     Enum.map(team.players, fn player_id ->
       %AttendanceRequested{
         attendance_id: Id.generate(),
@@ -72,6 +75,7 @@ defmodule Attend.Team do
   end
 
   def apply(team, %AttendanceRequested{} = event) do
+    # TODO: figure out what it means that this event on this aggregate
+    # doesn't actually change the state.
     team
   end
-end
