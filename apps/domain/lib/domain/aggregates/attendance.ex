@@ -5,16 +5,10 @@ defmodule Attend.Attendance do
     Attendance,
     ConfirmAttendance,
     AttendanceRequested,
-    Team,
-    Id,
-  }
-
-  alias Commanded.Aggregates.{
-    Aggregate,
-    Registry
   }
 
   # Commands
+  defmodule RequestAttendance, do: defstruct [:attendance_id, :game_id, :team_id, :player_id]
   defmodule MarkAttendanceRequestSent, do: defstruct [:attendance_id]
 
   defmodule ConfirmAttendance do
@@ -42,11 +36,20 @@ defmodule Attend.Attendance do
     defstruct [:attendance_id, :status, :message]
   end
 
-  def execute(%Attendance{} = attendance, %MarkAttendanceRequestSent{} = command) do
+  def execute(%Attendance{} = _attendance, %RequestAttendance{} = command) do
+    %AttendanceRequested{
+      attendance_id: command.attendance_id,
+      game_id: command.game_id,
+      team_id: command.team_id,
+      player_id: command.player_id,
+    }
+  end
+
+  def execute(%Attendance{} = _attendance, %MarkAttendanceRequestSent{} = command) do
     %AttendanceRequestSent{attendance_id: command.attendance_id}
   end
 
-  def execute(%Attendance{} = attendance, %ConfirmAttendance{} = command) do
+  def execute(%Attendance{} = _attendance, %ConfirmAttendance{} = command) do
     %AttendanceConfirmed{
       attendance_id: command.attendance_id,
       status: command.status,
@@ -63,7 +66,7 @@ defmodule Attend.Attendance do
     }
   end
 
-  def apply(%Attendance{} = a, %AttendanceRequestSent{} = event ) do
+  def apply(%Attendance{} = a, %AttendanceRequestSent{} = _event ) do
     %{ a | status: "sent" }
   end
 

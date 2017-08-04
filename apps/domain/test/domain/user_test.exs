@@ -51,7 +51,7 @@ defmodule Attend.UserTest do
     :ok = Router.dispatch(check_attendance)
 
     # # Terrible HACK: the projection doesn't have time to run.
-    :timer.sleep 100
+    :timer.sleep 300
 
     bob_ross_id = register_user_command.user_id
     query = from u in UserReadModel,

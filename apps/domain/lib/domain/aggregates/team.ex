@@ -6,7 +6,6 @@ defmodule Attend.Team do
     RegisterTeam,
     JoinTeam,
     Id,
-    Attendance.AttendanceRequested,
   }
 
   # Commands
@@ -27,7 +26,7 @@ defmodule Attend.Team do
   end
 
   defmodule CheckAttendance do
-    defstruct [:team_id, :game_id]
+    defstruct [:attendance_check_id, :team_id, :game_id]
 
     def new(game_id, team_id) do
       %CheckAttendance{game_id: game_id, team_id: team_id}
@@ -37,6 +36,14 @@ defmodule Attend.Team do
   # Events
   defmodule TeamRegistered, do: defstruct [:team_id, :name]
   defmodule PlayerJoinedTeam, do: defstruct [:team_id, :user_id]
+  defmodule TeamAttendanceCheckStarted do
+    defstruct [
+      :attendance_check_id,
+      :game_id,
+      :team_id,
+      player_ids: []
+    ]
+  end
 
   def execute(%Team{} = _team, %RegisterTeam{} = command) do
     %TeamRegistered{team_id: command.team_id, name: command.name}
@@ -53,17 +60,14 @@ defmodule Attend.Team do
   end
 
   def execute(%Team{} = team, %CheckAttendance{} = command) do
-    # TODO: consider firing an event for the whole check here also
-    # TeamAttendanceRequested. Follow up with the ones for each player
-    # each of those individual requests could also reference the team one.
-    Enum.map(team.players, fn player_id ->
-      %AttendanceRequested{
-        attendance_id: Id.generate(),
-        game_id: command.game_id,
-        team_id: team.id,
-        player_id: player_id,
-      }
-    end)
+    id = command.attendance_check_id || Id.generate()
+
+    %TeamAttendanceCheckStarted{
+      attendance_check_id: id,
+      game_id: command.game_id,
+      team_id: command.team_id,
+      player_ids: team.players
+    }
   end
 
   def apply(%Team{} = team, %TeamRegistered{team_id: id, name: name}) do
@@ -74,8 +78,14 @@ defmodule Attend.Team do
     %Team{team | players: [user_id | team.players]}
   end
 
-  def apply(team, %AttendanceRequested{} = event) do
+  def apply(%Team{id: _id} = team, %TeamAttendanceCheckStarted{} = _event) do
     # TODO: figure out what it means that this event on this aggregate
     # doesn't actually change the state.
+    # I've currently got it in my head that we have to fire this event here
+    # because it belongs to the team and since we're crossing over into the
+    # Attendance aggregate, we'll have to use a process manager for that
+    # This could be a made-up rule.
     team
   end
+
+end
