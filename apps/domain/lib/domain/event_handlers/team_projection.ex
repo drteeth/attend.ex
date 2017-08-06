@@ -1,14 +1,9 @@
 defmodule Attend.EventHandlers.TeamProjection do
   @behaviour Commanded.Event.Handler
 
-  alias Attend.{
-    User.UserRegistered,
-    Team.TeamRegistered,
-    Team.PlayerJoinedTeam,
-    Repo,
-    }
+  alias Attend.{User, Team, Repo}
 
-  defmodule Player do
+  defmodule UserTeams do
     use Ecto.Schema
 
     @primary_key {:id, :binary_id, autogenerate: false}
@@ -19,7 +14,7 @@ defmodule Attend.EventHandlers.TeamProjection do
     end
   end
 
-  defmodule Team do
+  defmodule TeamPlayers do
     use Ecto.Schema
 
     @primary_key {:id, :binary_id, autogenerate: false}
@@ -29,21 +24,21 @@ defmodule Attend.EventHandlers.TeamProjection do
     end
   end
 
-  def handle(%UserRegistered{user_id: user_id, name: name, email: email}, _metadata) do
-    Repo.insert!(%Player{id: user_id, name: name, email: email, teams: []})
+  def handle(%User.Registered{user_id: user_id, name: name, email: email}, _metadata) do
+    Repo.insert!(%UserTeams{id: user_id, name: name, email: email, teams: []})
     :ok
   end
 
-  def handle(%TeamRegistered{team_id: team_id, name: name}, _metadata) do
-    Repo.insert!(%Team{id: team_id, name: name, players: []})
+  def handle(%Team.Registered{team_id: team_id, name: name}, _metadata) do
+    Repo.insert!(%TeamPlayers{id: team_id, name: name, players: []})
     :ok
   end
 
-  def handle(%PlayerJoinedTeam{team_id: team_id, user_id: user_id}, _metadata) do
+  def handle(%Team.PlayerJoined{team_id: team_id, user_id: user_id}, _metadata) do
     Repo.transaction fn ->
       # find the player and the team
-      player = Repo.get!(Player, user_id)
-      team = Repo.get!(Team, team_id)
+      player = Repo.get!(UserTeams, user_id)
+      team = Repo.get!(TeamPlayers, team_id)
 
       # update the player's team with the new team
       team_attrs = %{id: team.id, name: team.name}

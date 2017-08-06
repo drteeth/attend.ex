@@ -1,10 +1,7 @@
 defmodule Attend.EventHandlers.TeamGames do
   @behaviour Commanded.Event.Handler
 
-  alias Attend.{
-    Game.GameScheduled,
-    Team.TeamRegistered,
-  }
+  alias Attend.{Team, Game}
 
   defmodule TeamGames  do
     defstruct [:team_id, :name, games: []]
@@ -20,7 +17,7 @@ defmodule Attend.EventHandlers.TeamGames do
     Agent.start_link(fn -> %{} end, name: __MODULE__)
   end
 
-  def handle(%GameScheduled{} = event, _metadata) do
+  def handle(%Game.Scheduled{} = event, _metadata) do
     Agent.update(__MODULE__, fn state ->
       home_team_name = Map.get(state, event.home_team_id).name
       away_team_name = Map.get(state, event.away_team_id).name
@@ -48,7 +45,7 @@ defmodule Attend.EventHandlers.TeamGames do
     :ok
   end
 
-  def handle(%TeamRegistered{} = event, _metadata) do
+  def handle(%Team.Registered{} = event, _metadata) do
     Agent.update(__MODULE__, fn state ->
       state
       |> Map.put(event.team_id, %TeamGames{team_id: event.team_id, name: event.name})

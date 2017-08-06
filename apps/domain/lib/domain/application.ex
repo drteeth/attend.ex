@@ -20,6 +20,7 @@ defmodule Attend.Domain.Application do
     children = [
       supervisor(Repo, []),
       worker(TeamGames, []),
+      worker(Attend.FakeEmailer, []),
 
       worker(ProcessRouter, ["AttendanceChecker", AttendanceChecker,
                              Attend.Router, [start_from: :origin]], id: :attendance_checker),

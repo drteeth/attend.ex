@@ -1,84 +1,55 @@
 defmodule Attend.Team do
   defstruct [:id, :name, :players]
 
-  alias Attend.{
-    Team,
-    RegisterTeam,
-    JoinTeam,
-    Id,
-  }
+  alias Attend.Team
 
   # Commands
-  defmodule RegisterTeam do
-    defstruct [:team_id, :name]
-
-    def new(name) do
-      %RegisterTeam{team_id: Id.generate(), name: name}
-    end
-  end
-
-  defmodule JoinTeam do
-    defstruct [:team_id, :user_id]
-
-    def new(user_id, team_id) do
-      %JoinTeam{user_id: user_id, team_id: team_id}
-    end
-  end
-
-  defmodule CheckAttendance do
-    defstruct [:attendance_check_id, :team_id, :game_id]
-
-    def new(game_id, team_id) do
-      %CheckAttendance{game_id: game_id, team_id: team_id}
-    end
-  end
+  defmodule Register, do: defstruct [:team_id, :name]
+  defmodule AddPlayer, do: defstruct [:team_id, :user_id]
+  defmodule CheckAttendance, do: defstruct [:attendance_check_id, :team_id, :game_id]
 
   # Events
-  defmodule TeamRegistered, do: defstruct [:team_id, :name]
-  defmodule PlayerJoinedTeam, do: defstruct [:team_id, :user_id]
-  defmodule TeamAttendanceCheckStarted do
-    defstruct [
+  defmodule Registered, do: defstruct [:team_id, :name]
+  defmodule PlayerJoined, do: defstruct [:team_id, :user_id]
+  defmodule AttendanceCheckStarted, do: defstruct [
       :attendance_check_id,
       :game_id,
       :team_id,
       player_ids: []
     ]
+
+  def execute(%Team{} = _team, %Register{} = command) do
+    %Registered{team_id: command.team_id, name: command.name}
   end
 
-  def execute(%Team{} = _team, %RegisterTeam{} = command) do
-    %TeamRegistered{team_id: command.team_id, name: command.name}
-  end
-
-  def execute(%Team{} = team, %JoinTeam{} = command) do
+  def execute(%Team{} = team, %AddPlayer{} = command) do
     # TODO Validate that the team exists?
 
     if Enum.member?(team.players, command.user_id) do
       {:error, :player_already_joined_team}
     else
-      %PlayerJoinedTeam{user_id: command.user_id, team_id: command.team_id}
+      %PlayerJoined{user_id: command.user_id, team_id: command.team_id}
     end
   end
 
   def execute(%Team{} = team, %CheckAttendance{} = command) do
-    id = command.attendance_check_id || Id.generate()
-
-    %TeamAttendanceCheckStarted{
-      attendance_check_id: id,
+    %AttendanceCheckStarted{
+      attendance_check_id: command.attendance_check_id,
       game_id: command.game_id,
       team_id: command.team_id,
       player_ids: team.players
     }
   end
 
-  def apply(%Team{} = team, %TeamRegistered{team_id: id, name: name}) do
+  def apply(%Team{} = team, %Registered{team_id: id, name: name}) do
     %Team{team | id: id, name: name, players: []}
   end
 
-  def apply(%Team{id: id} = team, %PlayerJoinedTeam{team_id: id, user_id: user_id}) do
+  def apply(%Team{id: id} = team, %PlayerJoined{team_id: id, user_id: user_id}) do
     %Team{team | players: [user_id | team.players]}
   end
 
-  def apply(%Team{id: _id} = team, %TeamAttendanceCheckStarted{} = _event) do
+  def apply(%Team{id: _id} = team, %AttendanceCheckStarted{} = _event) do
     # TODO: figure out what it means that this event on this aggregate
     # doesn't actually change the state.
     # I've currently got it in my head that we have to fire this event here

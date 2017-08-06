@@ -2,23 +2,17 @@ defmodule Attend.EventHandlers.UserProjection do
   @behaviour Commanded.Event.Handler
 
   alias Attend.{
-    User.UserRegistered,
-    UserReadModel,
-    Repo,
-    Attendance.AttendanceRequested,
-    Attendance.AttendanceRequestSent,
-    Attendance.AttendanceConfirmed,
+    User, Repo, UserReadModel, Attendance
   }
 
-  def handle(%UserRegistered{user_id: id, name: name, email: email}, _metadata) do
+  def handle(%User.Registered{user_id: id, name: name, email: email}, _metadata) do
     case Repo.insert(%UserReadModel{id: id, name: name, email: email}) do
       {:ok, _} -> :ok
       e -> e
     end
   end
 
-  def handle(%AttendanceRequested{} = event, _metadata) do
-    IO.inspect(event, label: "requested")
+  def handle(%Attendance.Requested{} = event, _metadata) do
     player = Repo.get!(UserReadModel, event.player_id)
     attendance_checks = [event.attendance_id | player.attendance_checks]
     changeset = UserReadModel.changeset(
@@ -33,16 +27,14 @@ defmodule Attend.EventHandlers.UserProjection do
     :ok
   end
 
-  def handle(%AttendanceRequestSent{} = event, _metadata) do
-    IO.inspect(event, label: "sent")
-    # TODO: update status to "sent"
+  def handle(%Attendance.Confirmed{} = _event, _metadata) do
+    # TODO: update status to event.status
+    # TODO: update mssage to event.message
     :ok
   end
 
-  def handle(%AttendanceConfirmed{} = event, _metadata) do
-    IO.inspect(event, label: "confirmed")
-    # TODO: update status to event.status
-    # TODO: update mssage to event.message
+  def handle(%Attendance.Timedout{} = _event, _metadata) do
+    # TODO: update status to "timed_out"
     :ok
   end
 

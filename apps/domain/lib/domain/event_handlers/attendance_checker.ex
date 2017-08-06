@@ -5,25 +5,19 @@ defmodule Attend.AttendanceChecker do
     Game,
     Team,
     User,
-  }
-
-  alias Attend.Attendance.{
-    AttendanceRequested,
-    AttendanceRequestSent,
-    AttendanceConfirmed,
-    MarkAttendanceRequestSent,
+    Attendance
   }
 
   alias Commanded.Aggregates.{Aggregate, Registry}
 
   defstruct [:attendance_id, :status]
 
-  def interested?(%AttendanceRequested{attendance_id: id}), do: {:start, id}
-  def interested?(%AttendanceRequestSent{attendance_id: id}), do: {:continue, id}
-  def interested?(%AttendanceConfirmed{attendance_id: id}), do: {:stop, id}
+  def interested?(%Attendance.Requested{attendance_id: id}), do: {:start, id}
+  def interested?(%Attendance.Confirmed{attendance_id: id}), do: {:stop, id}
+  def interested?(%Attendance.Timedout{attendance_id: id}), do: {:continue, id}
   def interested?(_event), do: false
 
-  def handle(_state, %AttendanceRequested{} = event) do
+  def handle(_state, %Attendance.Requested{} = event) do
     # TODO: send an email
     # TODO: don't send an email on replay
 
@@ -48,35 +42,35 @@ defmodule Attend.AttendanceChecker do
       start: game.start,
     }
 
-    :ok = mail(attrs)
-    case mail(attrs) do
-      :ok -> [%MarkAttendanceRequestSent{attendance_id: event.attendance_id}]
-      _ -> []
-    end
-  end
+    mail(attrs)
+    # TODO set a timer going somewhere to timeout the request
 
-  def handle(_state, %AttendanceRequestSent{} = _event) do
     []
   end
 
-  def handle(_state, %AttendanceConfirmed{}) do
+  def handle(_state, %Attendance.Confirmed{}) do
     []
   end
 
-  def apply(state, %AttendanceRequested{} = event) do
+  def handle(_state, %Attendance.Timedout{} = _event) do
+    []
+  end
+
+  def apply(state, %Attendance.Requested{} = event) do
     %{ state | status: :requesting, attendance_id: event.attendance_id }
   end
 
-  def apply(state, %AttendanceRequestSent{} = _event) do
-    %{ state | status: :sent }
-  end
-
-  def apply(state, %AttendanceConfirmed{} = _event) do
+  def apply(state, %Attendance.Confirmed{} = _event) do
     %{ state | status: :confirmed }
   end
 
-  defp mail(_args) do
+  def apply(state, %Attendance.Timedout{} = _event) do
+    %{ state | status: "timed_out" }
+  end
+
+  defp mail(args) do
     # TODO: implement actually sending an email
+    Attend.FakeEmailer.send_email(args)
     :ok
   end
 

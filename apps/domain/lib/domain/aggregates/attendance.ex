@@ -3,41 +3,29 @@ defmodule Attend.Attendance do
 
   alias Attend.{
     Attendance,
-    ConfirmAttendance,
-    AttendanceRequested,
   }
 
   # Commands
-  defmodule RequestAttendance, do: defstruct [:attendance_id, :game_id, :team_id, :player_id]
-  defmodule MarkAttendanceRequestSent, do: defstruct [:attendance_id]
-
-  defmodule ConfirmAttendance do
-    defstruct [:attendance_id, :status, :message]
-
-    def new(attendance_id, status, message) do
-      %ConfirmAttendance{
-        attendance_id: attendance_id,
-        status: status,
-        message: message
-      }
-    end
-  end
+  defmodule Request, do: defstruct [
+        :attendance_id,
+        :game_id,
+        :team_id,
+        :player_id]
+  defmodule Confirm, do: defstruct [:attendance_id, :status, :message]
+  defmodule Timeout, do: defstruct [:attendance_id]
 
   # Events
-  defmodule AttendanceRequested do
-    defstruct [:attendance_id, :game_id, :player_id, :team_id]
-  end
+  defmodule Requested, do: defstruct [
+        :attendance_id,
+        :game_id,
+        :player_id,
+        :team_id]
+  defmodule Confirmed, do: defstruct [:attendance_id, :status, :message]
+  defmodule Timedout, do: defstruct [:attendance_id]
 
-  defmodule AttendanceRequestSent do
-    defstruct [:attendance_id]
-  end
-
-  defmodule AttendanceConfirmed do
-    defstruct [:attendance_id, :status, :message]
-  end
-
-  def execute(%Attendance{} = _attendance, %RequestAttendance{} = command) do
-    %AttendanceRequested{
+  # Handlers
+  def execute(%{} = _attendance, %Request{} = command) do
+    %Requested {
       attendance_id: command.attendance_id,
       game_id: command.game_id,
       team_id: command.team_id,
@@ -45,20 +33,22 @@ defmodule Attend.Attendance do
     }
   end
 
-  def execute(%Attendance{} = _attendance, %MarkAttendanceRequestSent{} = command) do
-    %AttendanceRequestSent{attendance_id: command.attendance_id}
-  end
-
-  def execute(%Attendance{} = _attendance, %ConfirmAttendance{} = command) do
-    %AttendanceConfirmed{
+  def execute(%{} = _attendance, %Confirm{} = command) do
+    %Confirmed {
       attendance_id: command.attendance_id,
       status: command.status,
       message: command.message,
     }
   end
 
-  def apply(%Attendance{} = _, %AttendanceRequested{} = event) do
-    %Attendance{
+  def execute(%{} = _attendance, %Timeout{} = command) do
+    %Timedout {
+      attendance_id: command.attendance_id,
+    }
+  end
+
+  def apply(%Attendance{} = _, %Requested{} = event) do
+    %Attendance {
       id: event.attendance_id,
       game_id: event.game_id,
       team_id: event.team_id,
@@ -66,15 +56,15 @@ defmodule Attend.Attendance do
     }
   end
 
-  def apply(%Attendance{} = a, %AttendanceRequestSent{} = _event ) do
-    %{ a | status: "sent" }
-  end
-
-  def apply(%Attendance{} = a, %AttendanceConfirmed{} = event) do
+  def apply(%Attendance{} = a, %Confirmed{} = event) do
     %{ a |
        status: event.status,
        message: event.message,
     }
+  end
+
+  def apply(%Attendance{} = a, %Timedout{} = _event) do
+    %{ a | status: "timed out" }
   end
 
 end
