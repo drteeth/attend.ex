@@ -51,6 +51,11 @@ defmodule Attend.UserTest do
     }
     :ok = Router.dispatch(the_noodles)
 
+    :ok = Router.dispatch(%Team.AddPlayer {
+      team_id: the_noodles.team_id,
+      user_id: alice_id,
+    })
+
     game = %Game.Schedule {
       game_id: Id.generate(),
       location: "Monarch Park: Field 1",
