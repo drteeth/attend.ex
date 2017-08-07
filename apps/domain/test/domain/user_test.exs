@@ -74,9 +74,9 @@ defmodule Attend.UserTest do
     :ok = Router.dispatch(check_attendance)
 
     # # Terrible HACK: the projection doesn't have time to run.
-    :timer.sleep 300
+    :timer.sleep 100
 
-    email = hd(Attend.FakeEmailer.get_emails)
+    email = List.last(Attend.FakeEmailer.get_emails)
 
     token = email.attendance_id
     confirm_command = %Attendance.Confirm {
