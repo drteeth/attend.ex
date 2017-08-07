@@ -18,6 +18,5 @@ defmodule Attend.Router do
   dispatch [
     Attendance.Request,
     Attendance.Confirm,
-    Attendance.Timeout,
   ], to: Attendance, identity: :attendance_id
 end

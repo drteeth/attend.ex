@@ -12,7 +12,6 @@ defmodule Attend.Attendance do
         :team_id,
         :player_id]
   defmodule Confirm, do: defstruct [:attendance_id, :status, :message]
-  defmodule Timeout, do: defstruct [:attendance_id]
 
   # Events
   defmodule Requested, do: defstruct [
@@ -21,7 +20,6 @@ defmodule Attend.Attendance do
         :player_id,
         :team_id]
   defmodule Confirmed, do: defstruct [:attendance_id, :status, :message]
-  defmodule Timedout, do: defstruct [:attendance_id]
 
   # Handlers
   def execute(%{} = _attendance, %Request{} = command) do
@@ -41,12 +39,6 @@ defmodule Attend.Attendance do
     }
   end
 
-  def execute(%{} = _attendance, %Timeout{} = command) do
-    %Timedout {
-      attendance_id: command.attendance_id,
-    }
-  end
-
   def apply(%Attendance{} = _, %Requested{} = event) do
     %Attendance {
       id: event.attendance_id,
@@ -61,10 +53,6 @@ defmodule Attend.Attendance do
        status: event.status,
        message: event.message,
     }
-  end
-
-  def apply(%Attendance{} = a, %Timedout{} = _event) do
-    %{ a | status: "timed out" }
   end
 
 end

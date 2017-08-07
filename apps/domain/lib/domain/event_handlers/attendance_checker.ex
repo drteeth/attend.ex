@@ -14,7 +14,6 @@ defmodule Attend.AttendanceChecker do
 
   def interested?(%Attendance.Requested{attendance_id: id}), do: {:start, id}
   def interested?(%Attendance.Confirmed{attendance_id: id}), do: {:stop, id}
-  def interested?(%Attendance.Timedout{attendance_id: id}), do: {:continue, id}
   def interested?(_event), do: false
 
   def handle(_state, %Attendance.Requested{} = event) do
@@ -43,16 +42,11 @@ defmodule Attend.AttendanceChecker do
     }
 
     mail(attrs)
-    # TODO set a timer going somewhere to timeout the request
 
     []
   end
 
   def handle(_state, %Attendance.Confirmed{}) do
-    []
-  end
-
-  def handle(_state, %Attendance.Timedout{} = _event) do
     []
   end
 
@@ -62,10 +56,6 @@ defmodule Attend.AttendanceChecker do
 
   def apply(state, %Attendance.Confirmed{} = _event) do
     %{ state | status: :confirmed }
-  end
-
-  def apply(state, %Attendance.Timedout{} = _event) do
-    %{ state | status: "timed_out" }
   end
 
   defp mail(args) do

@@ -33,11 +33,6 @@ defmodule Attend.EventHandlers.UserProjection do
     :ok
   end
 
-  def handle(%Attendance.Timedout{} = _event, _metadata) do
-    # TODO: update status to "timed_out"
-    :ok
-  end
-
   def handle(_event, _metadata), do: :ok
 
 end
